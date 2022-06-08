@@ -17,6 +17,8 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.15.6 // indirect
+	github.com/robfig/cron/v3 v3.0.0 // indirect
+	github.com/superoo7/go-gecko v1.0.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.37.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
