@@ -37,45 +37,82 @@ func (r *Repository) GetNews(page, size int) ([]News, int, error) {
 	collection := r.MongoClient.Database("ventures").Collection("news")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-
 	options := options.Find()
 	if size != 0 {
 		options.SetSkip(int64(page * size))
 		options.SetLimit(int64(size))
 	}
-
 	filter := bson.M{}
-
 	cur, err := collection.Find(ctx, filter, options)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil
 	}
-
 	var news []News
 	for cur.Next(ctx) {
 		userEntity := News{}
 		err := cur.Decode(&userEntity)
 		if err != nil {
-			return nil, 0, err
+			return nil, 0, nil
 		}
 		news = append(news, userEntity)
 	}
 
 	totalElements, err := collection.CountDocuments(ctx, filter)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil
 	}
 
 	return news, int(totalElements), nil
 }
 
-func (r *Repository) AddNews(title, content, image string) error {
+func (r *Repository) AddNews(news News) (*News, error) {
 	collection := r.MongoClient.Database("ventures").Collection("news")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	_, err := collection.InsertOne(ctx, bson.M{"title": title, "content": content, "image": image})
+
+	_, err := collection.InsertOne(ctx, news)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func (r *Repository) DeleteNews(id string) error {
+	collection := r.MongoClient.Database("ventures").Collection("news")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	filter := bson.M{"id": id}
+	_, err := collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (r *Repository) GetNewsByID(id string) (*News, error) {
+	collection := r.MongoClient.Database("ventures").Collection("news")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	filter := bson.M{"id": id}
+
+	cur := collection.FindOne(ctx, filter)
+
+	if cur.Err() != nil {
+		return nil, cur.Err()
+	}
+
+	if cur == nil {
+		return nil, cur.Err()
+	}
+
+	newsEntitiy := News{}
+	err := cur.Decode(&newsEntitiy)
+	if err != nil {
+		return nil, err
+	}
+
+	return &newsEntitiy, nil
 }
