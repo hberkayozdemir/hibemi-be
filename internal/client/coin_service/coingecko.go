@@ -1,11 +1,10 @@
 package coin_service
 
 import (
-	"fmt"
 	"github.com/hberkayozdemir/hibemi-be/internal/coin"
 	gecko "github.com/superoo7/go-gecko/v3"
 	"log"
-	http "net/http"
+	"net/http"
 )
 
 type CGclient struct {
@@ -25,5 +24,8 @@ func (cgg *CGclient) FetchCoins() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(coin)
+	err := cgg.Repository.AddCoin(coin)
+	if err != nil {
+		return
+	}
 }

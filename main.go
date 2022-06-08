@@ -16,7 +16,8 @@ import (
 func main() {
 	const DB_URL = "mongodb+srv://hbo_admin:pDXudWBy76rnVngE@hibemi.gtlntks.mongodb.net/?retryWrites=true&w=majority"
 
-	client := coin_service.NewCoinGeckoClient(coin.Repository{})
+	coinGeckoRepository := coin.NewRepository(DB_URL)
+	client := coin_service.NewCoinGeckoClient(coinGeckoRepository)
 	c := cron.New()
 	c.AddFunc("*/1 * * * *", func() { client.FetchCoins() })
 	c.Start()
