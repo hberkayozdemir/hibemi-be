@@ -76,7 +76,7 @@ func (r *Repository) AddNews(news News) (*News, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return r.GetNewsByID(news.ID)
 }
 
 func (r *Repository) DeleteNews(id string) error {

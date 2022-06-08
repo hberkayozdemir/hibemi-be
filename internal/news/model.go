@@ -3,7 +3,6 @@ package news
 import "time"
 
 type NewsDTO struct {
-	ID       string   `json:"id"`
 	Title    string   `json:"title"`
 	Image    string   `json:"image"`
 	Content  string   `json:"content"`

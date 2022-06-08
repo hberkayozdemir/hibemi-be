@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	const DB_URL = "mongodb+srv://hbo_admin:<pDXudWBy76rnVngE>@hibemi.gtlntks.mongodb.net/?retryWrites=true&w=majority"
+	const DB_URL = "mongodb+srv://hbo_admin:pDXudWBy76rnVngE@hibemi.gtlntks.mongodb.net/?retryWrites=true&w=majority"
 
 	client := coin_service.NewCoinGeckoClient(coin.Repository{})
 	c := cron.New()

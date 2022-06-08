@@ -24,10 +24,6 @@ func (s *Service) DeleteNews(dto string) error {
 }
 
 func (s *Service) AddNews(newsDTO NewsDTO) (*News, error) {
-	addedNews, err := s.Repository.GetNewsByID(newsDTO.ID)
-	if addedNews != nil {
-		return nil, NewsTitleAlreadyExist
-	}
 	news := News{
 		ID:       helpers.GenerateUUID(8),
 		Title:    newsDTO.Title,
@@ -60,4 +56,12 @@ func (s *Service) getNews(pageNumber, size int) (*NewsPageableResponse, error) {
 		News: news,
 		Page: page,
 	}, nil
+}
+
+func (s *Service) GetNew(newID string) (*News, error) {
+	new, err := s.Repository.GetNewsByID(newID)
+	if err != nil {
+		return nil, err
+	}
+	return new, nil
 }

@@ -18,7 +18,8 @@ func NewHandler(service Service) Handler {
 func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/addNews", h.AddNewsHandler)
 	app.Get("/getNews", h.GetNewsHandler)
-	app.Delete("/new/news/:id", h.DeleteNewsHandler)
+	app.Delete("/news/:id", h.DeleteNewsHandler)
+	app.Get("/news/:id", h.GetNewHandler)
 }
 
 func (h *Handler) GetNewsHandler(c *fiber.Ctx) error {
@@ -27,7 +28,7 @@ func (h *Handler) GetNewsHandler(c *fiber.Ctx) error {
 	if len(pageStr) != 0 {
 		var err error
 		page, err = strconv.Atoi(pageStr)
-		if page <= 0 || err != nil {
+		if page < 0 || err != nil {
 			c.Status(fiber.StatusBadRequest)
 			return err
 		}
@@ -36,7 +37,7 @@ func (h *Handler) GetNewsHandler(c *fiber.Ctx) error {
 	size := 0
 	if len(sizeStr) != 0 {
 		var err error
-		page, err = strconv.Atoi(sizeStr)
+		size, err = strconv.Atoi(sizeStr)
 		if size <= 0 || err != nil {
 			c.Status(fiber.StatusBadRequest)
 			return err
@@ -76,14 +77,12 @@ func (h *Handler) AddNewsHandler(c *fiber.Ctx) error {
 }
 
 func (h *Handler) DeleteNewsHandler(c *fiber.Ctx) error {
-	newsSearchDTO := NewSearchCredentialsDTO{}
-	err := c.BodyParser(&newsSearchDTO)
-	if err != nil {
+	newID := c.Params("id")
+	if len(newID) == 0 {
 		c.Status(fiber.StatusBadRequest)
 		return nil
 	}
-
-	err = h.Service.DeleteNews(newsSearchDTO.ID)
+	err := h.Service.DeleteNews(newID)
 
 	switch err {
 	case nil:
@@ -92,5 +91,24 @@ func (h *Handler) DeleteNewsHandler(c *fiber.Ctx) error {
 		c.Status(fiber.StatusInternalServerError)
 	}
 
+	return nil
+}
+
+func (h *Handler) GetNewHandler(c *fiber.Ctx) error {
+	newID := c.Params("id")
+	if len(newID) == 0 {
+		c.Status(fiber.StatusOK)
+		return nil
+	}
+
+	new, err := h.Service.GetNew(newID)
+
+	switch err {
+	case nil:
+		c.Status(fiber.StatusOK)
+		c.JSON(new)
+	default:
+		c.Status(fiber.StatusInternalServerError)
+	}
 	return nil
 }
