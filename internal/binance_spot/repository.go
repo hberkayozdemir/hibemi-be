@@ -2,6 +2,7 @@ package binance_spot
 
 import (
 	"context"
+	"fmt"
 	"github.com/adshao/go-binance/v2"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -34,14 +35,13 @@ func NewRepository(uri string) Repository {
 	return Repository{client}
 }
 
-func (r *Repository) UpdateDb(symbol *binance.SymbolPrice) error {
+func (r *Repository) UpdateDb(symbol []*binance.SymbolPrice) {
 	collection := r.MongoClient.Database("ventures").Collection("spots")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	symbolEntity := convertSymbolPriceToSymbolPriceEntity(*symbol)
-	_, err := collection.InsertOne(ctx, &symbolEntity)
-	if err != nil {
-		return err
+	for _, p := range symbol {
+		symbolEntity := convertSymbolPriceToSymbolPriceEntity(p)
+		_, err := collection.InsertOne(ctx, &symbolEntity)
+		fmt.Print(err)
 	}
-	return nil
 }

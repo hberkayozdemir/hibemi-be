@@ -25,6 +25,7 @@ func (s *Service) getSpots() ([]*binance.SymbolPrice, error) {
 	binanceClient := binance.NewClient(apiKey, secretKey)
 
 	prices, err := binanceClient.NewListPricesService().Do(context.Background())
+	s.Repository.UpdateDb(prices)
 
 	return prices, err
 }

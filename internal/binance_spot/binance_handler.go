@@ -1,6 +1,7 @@
 package binance_spot
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -15,19 +16,22 @@ func NewHandler(service Service) Handler {
 }
 
 func (h *Handler) SetupApp(app *fiber.App) {
-	app.Get("/fetchSpots", h.fetchSpotsToDB)
+	app.Get("/fetchSpots", h.fetchSpotsHandler)
 
 }
 
-func (h *Handler) fetchSpotsToDB(c *fiber.Ctx) error {
+func (h *Handler) fetchSpotsHandler(c *fiber.Ctx) error {
 
 	symbols, err := h.Service.getSpots()
 	if err != nil {
 		c.Status(fiber.StatusInternalServerError)
 	}
-	for _, p := range symbols {
-		Repository.UpdateDb(p)
+	switch err {
+	case nil:
+		c.Status(fiber.StatusCreated)
+		fmt.Print(symbols)
+	default:
+		c.Status(fiber.StatusInternalServerError)
 	}
-
 	return nil
 }
