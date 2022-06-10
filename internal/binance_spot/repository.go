@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/adshao/go-binance/v2"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -40,8 +41,11 @@ func (r *Repository) UpdateDb(symbol []*binance.SymbolPrice) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	for _, p := range symbol {
-		symbolEntity := convertSymbolPriceToSymbolPriceEntity(p)
-		_, err := collection.InsertOne(ctx, &symbolEntity)
-		fmt.Print(err)
+		if strings.Contains(p.Symbol, "USDT") {
+			symbolEntity := convertSymbolPriceToSymbolPriceEntity(p)
+			_, err := collection.InsertOne(ctx, &symbolEntity)
+			fmt.Print(err == nil, p.Symbol)
+		}
+
 	}
 }

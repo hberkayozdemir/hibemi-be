@@ -16,6 +16,7 @@ func NewHandler(service Service) Handler {
 }
 
 func (h *Handler) SetupApp(app *fiber.App) {
+
 	app.Get("/fetchSpots", h.fetchSpotsHandler)
 
 }
