@@ -36,3 +36,7 @@ func (h *Handler) fetchSpotsHandler(c *fiber.Ctx) error {
 	}
 	return nil
 }
+
+func (h *Handler) fethTrendCoinHandler(c *fiber.Ctx) {
+
+}
