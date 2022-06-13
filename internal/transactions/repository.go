@@ -2,12 +2,13 @@ package transactions
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Repository struct {
@@ -70,7 +71,7 @@ func (r *Repository) GetTransaction(ID string) (*Transaction, error) {
 	return &transactionModel, nil
 }
 
-func (r *Repository) GetTransactionHistory(UserID string) (*[]Transaction, error) {
+func (r *Repository) GetTransactionHistory(UserID string) ([]Transaction, error) {
 	collection := r.MongoClient.Database("ventures").Collection("transaction")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -90,4 +91,5 @@ func (r *Repository) GetTransactionHistory(UserID string) (*[]Transaction, error
 		transactionEntities = append(transactionEntities, transactionEntity)
 	}
 
+	return convertTransactionEntityArrayToModelArray(transactionEntities), nil
 }

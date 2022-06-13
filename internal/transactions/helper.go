@@ -24,6 +24,21 @@ func convertTransactionEntityToModel(transactionEntity *TransactionEntity) Trans
 	}
 }
 
-func convertTransactionEntityToModelArray(entityArray []TransactionEntity) []Transaction {
+func convertTransactionEntityArrayToModelArray(transactionEntityArray []TransactionEntity) []Transaction {
+	Transactions := []Transaction{}
 
+	for _, item := range transactionEntityArray {
+
+		Transactions = append(Transactions, Transaction{
+			ID:              item.ID,
+			UserID:          item.UserID,
+			Symbol:          item.Symbol,
+			Amount:          item.Amount,
+			BuyingPrice:     item.BuyingPrice,
+			CreatedAt:       item.CreatedAt,
+			TransactionType: item.TransactionType,
+		})
+	}
+
+	return Transactions
 }

@@ -1,8 +1,8 @@
 package transactions
 
 import (
-	"github.com/hberkayozdemir/hibemi-be/helpers"
 	"time"
+	"github.com/hberkayozdemir/hibemi-be/helpers"
 )
 
 type Service struct {
@@ -33,7 +33,7 @@ func (s *Service) CreateTransaction(transactionDTO TransactionDTO) (*Transaction
 	return newTransaction, nil
 }
 
-func (s *Service) GetTransactionHistory(userId string) (*[]Transaction, error) {
+func (s *Service) GetTransactionHistory(userId string) ([]Transaction, error) {
 
 	transactions, err := s.Repository.GetTransactionHistory(userId)
 	if err != nil {
