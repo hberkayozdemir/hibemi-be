@@ -50,8 +50,6 @@ func (r *Repository) UpdateDb(symbol []*binance.SymbolPrice) {
 	collection.FindOneAndReplace(ctx, bson.M{}, symbolEntityList.SymbolPrices)
 }
 
-//_, err := collection.InsertOne(ctx, &symbolEntity)
-//			fmt.Print(err == nil, p.Symbol)
 func (r *Repository) GetSpotsIteratable() error {
 
 	binanceClient := binance.NewClient(apiKey, secretKey)
