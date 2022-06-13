@@ -24,7 +24,7 @@ func NewClient(baseUrl string) APIClient {
 	}
 }
 
-func (c APIClient) GetCoin(ctx context.Context, coinID string) (*Response, error) {
+func (c APIClient) GetCoin(ctx context.Context, coinID string) (*map[string]interface{}, error) {
 	endPoint := c.BaseURL + path.Join("api", "v3", "coins", coinID)
 	url := fmt.Sprintf("%s?localization=%s&tickers=%s&market_data=%s&community_data=%s&developer_data=%s&sparkline=%s", endPoint, "false", "false", "false", "false", "false", "false")
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
@@ -42,10 +42,10 @@ func (c APIClient) GetCoin(ctx context.Context, coinID string) (*Response, error
 		return nil, errors.WithStack(fmt.Errorf("get coin failed"))
 	}
 
-	var coin Response
+	var coin map[string]interface{}
 	if err := json.NewDecoder(res.Body).Decode(&coin); err != nil {
 		return nil, errors.Wrap(err, "error decoding get default address response")
 	}
 
-	return coin, nil
+	return &coin, nil
 }
