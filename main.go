@@ -7,6 +7,7 @@ import (
 	"github.com/hberkayozdemir/hibemi-be/internal/binance_spot"
 	"github.com/hberkayozdemir/hibemi-be/internal/coin"
 	"github.com/hberkayozdemir/hibemi-be/internal/news"
+	"github.com/hberkayozdemir/hibemi-be/internal/transactions"
 	"github.com/hberkayozdemir/hibemi-be/internal/user"
 	"github.com/robfig/cron/v3"
 	"log"
@@ -19,7 +20,7 @@ var (
 
 func main() {
 
-	const DB_URL = "mongodb+srv://hbo_admin:pDXudWBy76rnVngE@hibemi.gtlntks.mongodb.net/?retryWrites=true&w=majority"
+	const DB_URL = "mongodb+srv://hbo:Hbo.1998@hibemibe.zbozrlc.mongodb.net/?retryWrites=true&w=majority"
 
 	app := fiber.New()
 	app.Use(cors.New())
@@ -41,9 +42,13 @@ func main() {
 	coinService := coin.NewService(coinRepository)
 	coinHandler := coin.NewHandler(coinService)
 	coinHandler.SetupApp(app)
+	transactionRepository := transactions.NewRepository(DB_URL)
+	transactionService := transactions.NewService(transactionRepository)
+	transactionHandler := transactions.NewHandler(transactionService)
+	transactionHandler.SetupApp(app)
 
 	c := cron.New()
-	c.AddFunc("@every 10m", func() {
+	c.AddFunc("@every 20s", func() {
 		binanceSpotService.Repository.GetSpotsIteratable()
 
 	})
