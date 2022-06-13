@@ -3,6 +3,7 @@ module github.com/hberkayozdemir/hibemi-be
 go 1.17
 
 require (
+	github.com/adshao/go-binance/v2 v2.3.5
 	github.com/gofiber/fiber/v2 v2.34.0
 	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/google/uuid v1.3.0
@@ -15,7 +16,6 @@ require (
 )
 
 require (
-	github.com/adshao/go-binance/v2 v2.3.5 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect

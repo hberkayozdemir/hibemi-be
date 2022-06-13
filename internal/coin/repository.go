@@ -64,3 +64,17 @@ func (r *Repository) getAllSpots(page, size int) ([]Coins, int, error) {
 
 	return coins, int(totalElements), nil
 }
+
+func (r *Repository) AddCoin(coin map[string]interface{}) (map[string]interface{}, error) {
+	collection := r.MongoClient.Database("ventures").Collection("coins")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_, err := collection.InsertOne(ctx, coin)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.GetNewsByID(news.ID)
+}
