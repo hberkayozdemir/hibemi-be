@@ -2,9 +2,8 @@ package binance_spot
 
 import (
 	"context"
-	"fmt"
 	"github.com/adshao/go-binance/v2"
-	"net/http"
+	"go.mongodb.org/mongo-driver/bson"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,27 +40,23 @@ func (r *Repository) UpdateDb(symbol []*binance.SymbolPrice) {
 	collection := r.MongoClient.Database("ventures").Collection("spots")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
+	symbolEntityList := SymbolPriceEntityList{}
 	for _, p := range symbol {
 		if strings.Contains(p.Symbol, "USDT") {
 			symbolEntity := convertSymbolPriceToSymbolPriceEntity(p)
-			_, err := collection.InsertOne(ctx, &symbolEntity)
-			fmt.Print(err == nil, p.Symbol)
+			symbolEntityList.SymbolPrices = append(symbolEntityList.SymbolPrices, symbolEntity)
 		}
-
 	}
+	collection.FindOneAndReplace(ctx, bson.M{}, symbolEntityList.SymbolPrices)
 }
 
+//_, err := collection.InsertOne(ctx, &symbolEntity)
+//			fmt.Print(err == nil, p.Symbol)
 func (r *Repository) GetSpotsIteratable() error {
-	collection := r.MongoClient.Database("ventures").Collection("spots")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	collection.Drop(ctx)
+
 	binanceClient := binance.NewClient(apiKey, secretKey)
-	prices, err := binanceClient.NewListPricesService().Do(context.Background(), binance.WithHeaders(http.Header{
-		"apiKey":    {apiKey},
-		"secretKey": {secretKey},
-		"symbols":   {"BNBUSDT", "ETHUSDT", "BTCUSDT", "XRPUSDT", "NEOUSDT", "DOTUSDT", "SOLUSDT", "AVAXUSDT", "WAVESUSDT", "LINKUSDT", "NEARUSDT"},
-	}))
+	prices, err := binanceClient.NewListPricesService().Do(context.Background())
 	r.UpdateDb(prices)
 	return err
+
 }

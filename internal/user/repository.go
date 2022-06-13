@@ -2,11 +2,11 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
-	"os"
 	"time"
 )
 
@@ -15,19 +15,14 @@ type Repository struct {
 }
 
 func NewRepository(uri string) Repository {
-	env := os.Getenv("APP_ENV")
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
-
 	defer cancel()
-	client.Connect(ctx)
-
+	error := client.Connect(ctx)
+	fmt.Print(error)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	if env == "test" {
-		client.Database("ventures").Collection("users").Drop(ctx)
 	}
 
 	return Repository{client}
