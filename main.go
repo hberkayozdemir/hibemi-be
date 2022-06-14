@@ -1,17 +1,19 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/hberkayozdemir/hibemi-be/internal/banner"
 	"github.com/hberkayozdemir/hibemi-be/internal/binance_spot"
 	"github.com/hberkayozdemir/hibemi-be/internal/coin"
+	"github.com/hberkayozdemir/hibemi-be/internal/favlist"
 	"github.com/hberkayozdemir/hibemi-be/internal/news"
 	"github.com/hberkayozdemir/hibemi-be/internal/transactions"
 	"github.com/hberkayozdemir/hibemi-be/internal/user"
 	"github.com/robfig/cron/v3"
-	"log"
 )
 
 var (
@@ -49,6 +51,11 @@ func main() {
 	transactionService := transactions.NewService(transactionRepository)
 	transactionHandler := transactions.NewHandler(transactionService)
 	transactionHandler.SetupApp(app)
+
+	favlistRepository := favlist.NewRepository(DB_URL)
+	favlistService := favlist.NewService(favlistRepository)
+	favlistHandler := favlist.NewHandler(favlistService)
+	favlistHandler.SetupApp(app)
 
 	bannerRepository := banner.NewRepository(DB_URL)
 	bannerService := banner.NewService(bannerRepository)
