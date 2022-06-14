@@ -17,7 +17,6 @@ func NewHandler(service Service) Handler {
 func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/transactions", h.CreateTransactionHandler)
 	app.Get("/users/:id/transactions", h.GetTransactionHistoryHandler)
-
 }
 
 func (h *Handler) CreateTransactionHandler(c *fiber.Ctx) error {

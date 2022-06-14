@@ -75,6 +75,5 @@ func (r *Repository) AddCoin(coin map[string]interface{}) (map[string]interface{
 	if err != nil {
 		return nil, err
 	}
-
-	return r.GetNewsByID(news.ID)
+	return nil, nil
 }

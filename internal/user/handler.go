@@ -103,5 +103,4 @@ func (h *Handler) ActivateUser(c *fiber.Ctx) error {
 		c.Status(fiber.StatusInternalServerError)
 	}
 	return nil
-
 }

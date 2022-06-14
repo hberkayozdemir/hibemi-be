@@ -1,6 +1,7 @@
 package coin_gecko
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
@@ -26,7 +27,7 @@ func NewClient(baseUrl string) APIClient {
 func (c APIClient) GetCoin(coinID string) (*map[string]interface{}, error) {
 	endPoint := c.BaseURL + path.Join("api", "v3", "coins", coinID)
 	url := fmt.Sprintf("%s?localization=%s&tickers=%s&market_data=%s&community_data=%s&developer_data=%s&sparkline=%s", endPoint, "false", "false", "false", "false", "false", "false")
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create request to get coin")
 	}

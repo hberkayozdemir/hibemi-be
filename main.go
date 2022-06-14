@@ -4,9 +4,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/hberkayozdemir/hibemi-be/internal/banner"
 	"github.com/hberkayozdemir/hibemi-be/internal/binance_spot"
 	"github.com/hberkayozdemir/hibemi-be/internal/coin"
-	"github.com/hberkayozdemir/hibemi-be/internal/coin_gecko"
 	"github.com/hberkayozdemir/hibemi-be/internal/news"
 	"github.com/hberkayozdemir/hibemi-be/internal/transactions"
 	"github.com/hberkayozdemir/hibemi-be/internal/user"
@@ -49,23 +49,32 @@ func main() {
 	transactionService := transactions.NewService(transactionRepository)
 	transactionHandler := transactions.NewHandler(transactionService)
 	transactionHandler.SetupApp(app)
-	coinGeckoClient := coin_gecko.NewClient("https://api.coingecko.com/")
+
+	bannerRepository := banner.NewRepository(DB_URL)
+	bannerService := banner.NewService(bannerRepository)
+	bannerHandler := banner.NewHandler(bannerService)
+	bannerHandler.SetupApp(app)
+
+	//coinGeckoClient := coin_gecko.NewClient("https://api.coingecko.com/")
 
 	c := cron.New()
 	c.AddFunc("@every 20s", func() {
 		binanceSpotService.Repository.GetSpotsIteratable()
 
 	})
-	c.AddFunc("@every 1d", func() {
-		var coinResp map[string]interface{}
-		for _, v := range coins {
-			coinResp, err := coinGeckoClient.GetCoin(v)
-			if err != nil {
-				return
-			}
+	/*
+		c.AddFunc("@every 1d", func() {
+			var coinResp map[string]interface{}
+			for _, v := range coins {
+				coinResp, err := coinGeckoClient.GetCoin(v)
+				if err != nil {
+					return
+				}
 
-		}
-	})
+			}
+		})
+
+	*/
 	c.Start()
 	log.Fatal(app.Listen(":8080"))
 }
