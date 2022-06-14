@@ -3,11 +3,12 @@ package user
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"time"
 )
 
 type Repository struct {
@@ -168,7 +169,7 @@ func (r *Repository) DeleteActivationCode(code string) error {
 }
 
 func (r *Repository) GetUser(userID string) (*User, error) {
-	collection := r.MongoClient.Database("law").Collection("users")
+	collection := r.MongoClient.Database("ventures").Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 

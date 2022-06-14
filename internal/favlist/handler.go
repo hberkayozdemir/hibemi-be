@@ -1,9 +1,8 @@
 package favlist
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/hberkayozdemir/hibemi-be/internal/auth"
 )
 
 type Handler struct {
@@ -15,11 +14,19 @@ func NewHandler(service Service) Handler {
 		Service: service,
 	}
 }
+
 func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/Users/Favlist/AddCoin", h.CreateFavCoinHandler)
 }
 
 func (h *Handler) CreateFavCoinHandler(c *fiber.Ctx) error {
+	bearerToken := string(c.Request().Header.Peek("Authorization"))
+	isTokenValid, _ := auth.VerifyToken(bearerToken)
+	if !isTokenValid {
+		c.Status(fiber.StatusUnauthorized)
+		return nil
+	}
+
 	favCoinDTO := FavCoinDTO{}
 	err := c.BodyParser(&favCoinDTO)
 	if err != nil {
@@ -28,7 +35,6 @@ func (h *Handler) CreateFavCoinHandler(c *fiber.Ctx) error {
 	}
 
 	createdFavCoin, err := h.Service.CreateFavCoin(favCoinDTO)
-	fmt.Println(createdFavCoin)
 	switch err {
 	case nil:
 		c.JSON(createdFavCoin)

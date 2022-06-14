@@ -1,15 +1,15 @@
 package user
 
 import (
+	"math"
+	"math/rand"
+	"strconv"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/hberkayozdemir/hibemi-be/helpers"
 	"github.com/hberkayozdemir/hibemi-be/internal/client"
-	"math"
-	"math/rand"
-	"os"
-	"strconv"
-	"time"
 )
 
 type Service struct {
@@ -83,8 +83,8 @@ func (s *Service) LoginUser(userCredentialsDTO UserCredentialsDTO) (*Token, *fib
 		},
 	})
 
-	token, err := claims.SignedString([]byte(os.Getenv("SECRET_KEY")))
-
+	//token, err := claims.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	token, err := claims.SignedString([]byte("YsO8ecO8ayBoaWxtaSBzaXppIHNldml5b3I="))
 	if err != nil {
 		return nil, nil, err
 	}
