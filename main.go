@@ -62,8 +62,6 @@ func main() {
 	bannerHandler := banner.NewHandler(bannerService)
 	bannerHandler.SetupApp(app)
 
-	//coinGeckoClient := coin_gecko.NewClient("https://api.coingecko.com/")
-
 	c := cron.New()
 	c.AddFunc("@every 20s", func() {
 		binanceSpotService.Repository.GetSpotsIteratable()

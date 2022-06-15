@@ -1,6 +1,10 @@
 package coin
 
-import "math"
+import (
+	"fmt"
+	"math"
+	"strings"
+)
 
 type Service struct {
 	Repository Repository
@@ -13,7 +17,7 @@ func NewService(repository Repository) Service {
 }
 
 func (s *Service) GetAllSpots(pageNumber, size int) (*CoinsPageableResponse, error) {
-	coins, totelElements, err := s.Repository.getAllSpots(pageNumber, size)
+	spots, totelElements, err := s.Repository.getAllSpots(pageNumber, size)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +27,16 @@ func (s *Service) GetAllSpots(pageNumber, size int) (*CoinsPageableResponse, err
 		TotalElements: totelElements,
 		TotalPages:    int(math.Ceil(float64(totelElements) / float64(size))),
 	}
-	return &CoinsPageableResponse{Coins: coins,
+
+	var arr []string
+	for _, spot := range spots {
+		arr = strings.Split(spot.Symbol, "U")
+		lowerSymbol := strings.ToLower(arr[0])
+		fmt.Println(lowerSymbol)
+		s.Repository.UpdateGeckoPrice(lowerSymbol, spot.Price)
+	}
+
+	return &CoinsPageableResponse{Coins: spots,
 		Page: page,
 	}, nil
 }

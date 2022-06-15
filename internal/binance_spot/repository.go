@@ -46,6 +46,7 @@ func (r *Repository) UpdateDb(symbol []*binance.SymbolPrice) {
 			symbolEntity := convertSymbolPriceToSymbolPriceEntity(p)
 			symbolEntityList.SymbolPrices = append(symbolEntityList.SymbolPrices, symbolEntity)
 		}
+
 	}
 	collection.FindOneAndReplace(ctx, bson.M{}, symbolEntityList.SymbolPrices)
 }
