@@ -20,7 +20,6 @@ func (s *Service) CreateFavCoin(favCoinDTO FavCoinDTO) (*FavCoin, error) {
 		ID:           helpers.GenerateUUID(8),
 		Symbol:       favCoinDTO.Symbol,
 		CurrentPrice: favCoinDTO.CurrentPrice,
-		DailyChange:  favCoinDTO.DailyChange,
 		UserID:       favCoinDTO.UserID,
 	}
 
