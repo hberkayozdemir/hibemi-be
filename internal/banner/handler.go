@@ -16,7 +16,7 @@ func (h *Handler) SetupApp(app *fiber.App) {
 
 	app.Get("/Banners", h.BannersListHandler)
 	app.Post("/Banners/CreateBanner", h.CreateBanner)
-	app.Delete("/Banners/DeleteBanner:id", h.DeleteBannerHandler)
+	app.Post("/Banners/DeleteBanner:id", h.DeleteBannerHandler)
 	app.Get("/Banners/getBanner:id", h.GetBannerHandler)
 }
 

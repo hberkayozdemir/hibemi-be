@@ -18,7 +18,7 @@ func NewHandler(service Service) Handler {
 func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/addNews", h.AddNewsHandler)
 	app.Get("/getNews", h.GetNewsHandler)
-	app.Delete("/news/:id", h.DeleteNewsHandler)
+	app.Post("/news/:id", h.DeleteNewsHandler)
 	app.Get("/news/:id", h.GetNewHandler)
 }
 
