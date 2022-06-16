@@ -47,7 +47,7 @@ func (s *Service) RegisterUser(userDTO UserDTO) (*User, error) {
 		return nil, err
 	}
 
-	activationCode := strconv.Itoa(rand.Intn(999999-100000) + 100000)
+	activationCode := strconv.Itoa(rand.Intn(9999-1000) + 1000)
 
 	err = s.Repository.AddActivationCode(user.Email, activationCode)
 	if err != nil {
@@ -157,7 +157,7 @@ func (s *Service) GetAllStats() (*Stats, error) {
 
 	coinsCount, err := s.Repository.GetCoinsCount()
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	favListCount, err := s.Repository.GetFavListsCount()

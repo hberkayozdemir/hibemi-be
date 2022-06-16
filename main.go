@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -62,24 +63,24 @@ func main() {
 	bannerHandler := banner.NewHandler(bannerService)
 	bannerHandler.SetupApp(app)
 
+	port := SetPort()
+
 	c := cron.New()
 	c.AddFunc("@every 20s", func() {
 		binanceSpotService.Repository.GetSpotsIteratable()
 
 	})
-	/*
-		c.AddFunc("@every 1d", func() {
-			var coinResp map[string]interface{}
-			for _, v := range coins {
-				coinResp, err := coinGeckoClient.GetCoin(v)
-				if err != nil {
-					return
-				}
 
-			}
-		})
-
-	*/
 	c.Start()
-	log.Fatal(app.Listen(":8080"))
+	log.Fatal(app.Listen(":" + port))
+}
+
+func SetPort() string {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		return "8080"
+	}
+
+	return port
 }

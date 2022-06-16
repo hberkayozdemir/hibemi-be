@@ -20,6 +20,7 @@ func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/user/users/:userID", h.DeleteUserHandler)
 	app.Post("/users/:userID/activate", h.ActivateUser)
 	app.Get("/admin/stats", h.GetAllStatsHandler)
+	app.Post("/users/activate", h.ActivateUser)
 }
 
 func (h *Handler) RegisterUserHandler(c *fiber.Ctx) error {
@@ -113,6 +114,8 @@ func (h *Handler) GetAllStatsHandler(c *fiber.Ctx) error {
 	case nil:
 		c.Status(fiber.StatusOK)
 		c.JSON(stat)
-
+	default:
+		c.Status(fiber.StatusInternalServerError)
 	}
+	return nil
 }
