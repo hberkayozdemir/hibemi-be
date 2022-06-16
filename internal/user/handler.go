@@ -18,7 +18,7 @@ func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/register", h.RegisterUserHandler)
 	app.Post("/login", h.LoginUserHandler)
 	app.Post("/user/users/:userID", h.DeleteUserHandler)
-	app.Post("/users/:userID/activate", h.ActivateUser)
+	app.Post("/users/activate", h.ActivateUser)
 }
 
 func (h *Handler) RegisterUserHandler(c *fiber.Ctx) error {
