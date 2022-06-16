@@ -2,6 +2,7 @@ package coin
 
 import (
 	"fmt"
+	"github.com/hberkayozdemir/hibemi-be/internal/coin_gecko"
 	"math"
 	"strings"
 )
@@ -39,4 +40,13 @@ func (s *Service) GetAllSpots(pageNumber, size int) (*CoinsPageableResponse, err
 	return &CoinsPageableResponse{Coins: spots,
 		Page: page,
 	}, nil
+}
+
+func (s *Service) GetAllCoins() ([]coin_gecko.CoinGeckoResponse, error) {
+	coins, err := s.Repository.GetAllCoins()
+	if err != nil {
+		return nil, err
+	}
+
+	return coins, nil
 }
