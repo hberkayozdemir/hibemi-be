@@ -55,3 +55,12 @@ type ActivationCodeDTO struct {
 	Code  string `json:"code"`
 	Email string `json:"email"`
 }
+
+type Stats struct {
+	CodesCount        int64 `json:"codesCount"`
+	CoinsCount        int64 `json:"coinsCount"`
+	FavListCount      int64 `json:"favListCount"`
+	NewsCount         int64 `json:"newsCount"`
+	SpotsCount        int64 `json:"spotsCount"`
+	TransactionsCount int64 `json:"transactionsCount"`
+}

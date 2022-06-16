@@ -148,3 +148,41 @@ func (s *Service) GetUsersPageableResponse(pageNumber, size int) (*UsersPageable
 		Page:  page,
 	}, nil
 }
+
+func (s *Service) GetAllStats() (*Stats, error) {
+	codesCount, err := s.Repository.GetCodesCount()
+	if err != nil {
+		return nil, err
+	}
+
+	coinsCount, err := s.Repository.GetCoinsCount()
+	if err != nil {
+		return 0, err
+	}
+
+	favListCount, err := s.Repository.GetFavListsCount()
+	if err != nil {
+		return nil, err
+	}
+
+	spotsCount, err := s.Repository.GetSpotsCount()
+	if err != nil {
+		return nil, err
+	}
+
+	transactionsCount, err := s.Repository.GetTransactionsCount()
+	if err != nil {
+		return nil, err
+	}
+
+	newsCount, err := s.Repository.GetNewsCount()
+
+	return &Stats{
+		CodesCount:        codesCount,
+		CoinsCount:        coinsCount,
+		FavListCount:      favListCount,
+		NewsCount:         newsCount,
+		SpotsCount:        spotsCount,
+		TransactionsCount: transactionsCount,
+	}, nil
+}

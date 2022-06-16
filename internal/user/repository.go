@@ -194,3 +194,81 @@ func (r *Repository) GetUser(userID string) (*User, error) {
 
 	return &userEntity, nil
 }
+
+func (r *Repository) GetCodesCount() (int64, error) {
+	collection := r.MongoClient.Database("ventures").Collection("codes")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	codesCount, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return codesCount, nil
+}
+
+func (r *Repository) GetCoinsCount() (int64, error) {
+	collection := r.MongoClient.Database("ventures").Collection("coins")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	coinsCount, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return coinsCount, nil
+}
+
+func (r *Repository) GetFavListsCount() (int64, error) {
+	collection := r.MongoClient.Database("ventures").Collection("favlist")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	favListsCount, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return favListsCount, nil
+}
+
+func (r *Repository) GetNewsCount() (int64, error) {
+	collection := r.MongoClient.Database("ventures").Collection("news")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	newsCount, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return newsCount, nil
+}
+
+func (r *Repository) GetSpotsCount() (int64, error) {
+	collection := r.MongoClient.Database("ventures").Collection("spots")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	spotsCount, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return spotsCount, nil
+}
+
+func (r *Repository) GetTransactionsCount() (int64, error) {
+	collection := r.MongoClient.Database("ventures").Collection("spots")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	transactionsCount, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return transactionsCount, nil
+}
