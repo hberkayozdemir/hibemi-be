@@ -62,6 +62,30 @@ func (s *Service) RegisterUser(userDTO UserDTO) (*User, error) {
 	return newUser, nil
 }
 
+func (s *Service) RegisterEditor(editorDTO EditorDTO) (*User, error) {
+
+	hashedPassword, _ := helpers.HashPassword(editorDTO.Password)
+
+	user := User{
+		ID:              helpers.GenerateUUID(8),
+		FirstName:       editorDTO.FirstName,
+		LastName:        editorDTO.LastName,
+		Email:           editorDTO.Email,
+		Phone:           editorDTO.Phone,
+		Password:        hashedPassword,
+		IsEmailActivate: true,
+		UserType:        editorDTO.UserType,
+	}
+
+	newUser, err := s.Repository.RegisterUser(user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return newUser, nil
+}
+
 func (s *Service) LoginUser(userCredentialsDTO UserCredentialsDTO) (*Token, *fiber.Cookie, error) {
 	user, err := s.Repository.GetUserByEmail(userCredentialsDTO.Email)
 	if err != nil {

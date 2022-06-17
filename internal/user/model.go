@@ -12,6 +12,14 @@ type UserDTO struct {
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 }
+type EditorDTO struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	UserType  string `json:"userType"`
+}
 
 type User struct {
 	ID              string    `json:"id" bson:"id"`

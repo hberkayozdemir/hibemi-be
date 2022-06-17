@@ -16,6 +16,7 @@ func NewHandler(service Service) Handler {
 
 func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/register", h.RegisterUserHandler)
+	app.Post("/registerEditor", h.RegisterEditorHandler)
 	app.Post("/login", h.LoginUserHandler)
 	app.Post("/user/users/:userID", h.DeleteUserHandler)
 	app.Post("/users/:userID/activate", h.ActivateUser)
@@ -37,6 +38,26 @@ func (h *Handler) RegisterUserHandler(c *fiber.Ctx) error {
 	case nil:
 		c.Status(fiber.StatusCreated)
 		c.JSON(user)
+	default:
+		c.Status(fiber.StatusInternalServerError)
+	}
+	return nil
+}
+
+func (h *Handler) RegisterEditorHandler(c *fiber.Ctx) error {
+	editorDTO := EditorDTO{}
+	err := c.BodyParser(&editorDTO)
+	if err != nil {
+		c.Status(fiber.StatusBadRequest)
+		return nil
+	}
+
+	editor, err := h.Service.RegisterEditor(editorDTO)
+
+	switch err {
+	case nil:
+		c.Status(fiber.StatusCreated)
+		c.JSON(editor)
 	default:
 		c.Status(fiber.StatusInternalServerError)
 	}
