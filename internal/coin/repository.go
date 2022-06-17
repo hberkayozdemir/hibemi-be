@@ -34,36 +34,29 @@ func NewRepository(uri string) Repository {
 	return Repository{client}
 }
 
-func (r *Repository) getAllSpots(page, size int) ([]Coins, int, error) {
+func (r *Repository) getAllSpots() ([]Coins, error) {
 	collection := r.MongoClient.Database("ventures").Collection("spots")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	options := options.Find()
-	if size != 0 {
-		options.SetSkip(int64(page * size))
-		options.SetLimit(int64(size))
-	}
+
 	filter := bson.M{}
-	cur, err := collection.Find(ctx, filter, options)
+	cur, err := collection.Find(ctx, filter)
+
 	if err != nil {
-		return nil, 0, nil
+		return nil, nil
 	}
 	var coins []Coins
 	for cur.Next(ctx) {
+
 		userEntity := Coins{}
 		err := cur.Decode(&userEntity)
 		if err != nil {
-			return nil, 0, nil
+			return nil, nil
 		}
 		coins = append(coins, userEntity)
 	}
 
-	totalElements, err := collection.CountDocuments(ctx, filter)
-	if err != nil {
-		return nil, 0, nil
-	}
-
-	return coins, int(totalElements), nil
+	return coins, nil
 }
 
 func (r *Repository) AddCoin(coin coin_gecko.CoinGeckoResponse) (map[string]interface{}, error) {

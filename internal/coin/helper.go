@@ -6,14 +6,11 @@ import (
 
 func CoinGeckoEntityToModel(entity coin_gecko.CoinGeckoResponseEntity) coin_gecko.CoinGeckoResponse {
 	return coin_gecko.CoinGeckoResponse{
-		ID:              entity.ID,
-		Symbol:          entity.Symbol,
-		Name:            entity.Name,
-		Price:           entity.Price,
-		AssetPlatformID: entity.AssetPlatformID,
-		Platforms: struct {
-			NAMING_FAILED string `json:""`
-		}(entity.Platforms),
+		ID:                 entity.ID,
+		Symbol:             entity.Symbol,
+		Name:               entity.Name,
+		Price:              entity.Price,
+		AssetPlatformID:    entity.AssetPlatformID,
 		BlockTimeInMinutes: entity.BlockTimeInMinutes,
 		HashingAlgorithm:   entity.HashingAlgorithm,
 		Categories:         entity.Categories,

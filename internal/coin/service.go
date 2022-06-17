@@ -1,10 +1,7 @@
 package coin
 
 import (
-	"fmt"
 	"github.com/hberkayozdemir/hibemi-be/internal/coin_gecko"
-	"math"
-	"strings"
 )
 
 type Service struct {
@@ -17,29 +14,13 @@ func NewService(repository Repository) Service {
 	}
 }
 
-func (s *Service) GetAllSpots(pageNumber, size int) (*CoinsPageableResponse, error) {
-	spots, totelElements, err := s.Repository.getAllSpots(pageNumber, size)
+func (s *Service) GetAllSpots() ([]Coins, error) {
+	spots, err := s.Repository.getAllSpots()
 	if err != nil {
 		return nil, err
 	}
-	page := Page{
-		Number:        pageNumber,
-		Size:          size,
-		TotalElements: totelElements,
-		TotalPages:    int(math.Ceil(float64(totelElements) / float64(size))),
-	}
 
-	var arr []string
-	for _, spot := range spots {
-		arr = strings.Split(spot.Symbol, "U")
-		lowerSymbol := strings.ToLower(arr[0])
-		fmt.Println(lowerSymbol)
-		s.Repository.UpdateGeckoPrice(lowerSymbol, spot.Price)
-	}
-
-	return &CoinsPageableResponse{Coins: spots,
-		Page: page,
-	}, nil
+	return spots, nil
 }
 
 func (s *Service) GetAllCoins() ([]coin_gecko.CoinGeckoResponse, error) {
