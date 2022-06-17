@@ -2,7 +2,6 @@ package news
 
 import (
 	"github.com/hberkayozdemir/hibemi-be/helpers"
-	"math"
 )
 
 type Service struct {
@@ -39,23 +38,14 @@ func (s *Service) AddNews(newsDTO NewsDTO) (*News, error) {
 	return newNews, nil
 }
 
-func (s *Service) getNews(pageNumber, size int) (*NewsPageableResponse, error) {
-	news, totelElements, err := s.Repository.GetNews(pageNumber, size)
+func (s *Service) getNews() ([]News, error) {
+	news, err := s.Repository.GetNews()
 
 	if err != nil {
 		return nil, err
 	}
-	page := Page{
-		Number:        pageNumber,
-		Size:          size,
-		TotalElements: totelElements,
-		TotalPages:    int(math.Ceil(float64(totelElements) / float64(size))),
-	}
 
-	return &NewsPageableResponse{
-		News: news,
-		Page: page,
-	}, nil
+	return news, nil
 }
 
 func (s *Service) GetNew(newID string) (*News, error) {

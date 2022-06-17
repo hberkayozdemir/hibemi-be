@@ -33,36 +33,27 @@ func NewRepository(uri string) Repository {
 	return Repository{client}
 }
 
-func (r *Repository) GetNews(page, size int) ([]News, int, error) {
+func (r *Repository) GetNews() ([]News, error) {
 	collection := r.MongoClient.Database("ventures").Collection("news")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	options := options.Find()
-	if size != 0 {
-		options.SetSkip(int64(page * size))
-		options.SetLimit(int64(size))
-	}
+
 	filter := bson.M{}
-	cur, err := collection.Find(ctx, filter, options)
+	cur, err := collection.Find(ctx, filter)
 	if err != nil {
-		return nil, 0, nil
+		return nil, nil
 	}
 	var news []News
 	for cur.Next(ctx) {
 		userEntity := News{}
 		err := cur.Decode(&userEntity)
 		if err != nil {
-			return nil, 0, nil
+			return nil, nil
 		}
 		news = append(news, userEntity)
 	}
 
-	totalElements, err := collection.CountDocuments(ctx, filter)
-	if err != nil {
-		return nil, 0, nil
-	}
-
-	return news, int(totalElements), nil
+	return news, nil
 }
 
 func (r *Repository) AddNews(news News) (*News, error) {

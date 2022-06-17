@@ -2,7 +2,6 @@ package news
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"strconv"
 )
 
 type Handler struct {
@@ -23,28 +22,8 @@ func (h *Handler) SetupApp(app *fiber.App) {
 }
 
 func (h *Handler) GetNewsHandler(c *fiber.Ctx) error {
-	pageStr := c.Query("page")
-	page := 0
-	if len(pageStr) != 0 {
-		var err error
-		page, err = strconv.Atoi(pageStr)
-		if page < 0 || err != nil {
-			c.Status(fiber.StatusBadRequest)
-			return err
-		}
-	}
-	sizeStr := c.Query("size")
-	size := 0
-	if len(sizeStr) != 0 {
-		var err error
-		size, err = strconv.Atoi(sizeStr)
-		if size <= 0 || err != nil {
-			c.Status(fiber.StatusBadRequest)
-			return err
-		}
-	}
 
-	news, err := h.Service.getNews(page, size)
+	news, err := h.Service.getNews()
 	switch err {
 	case nil:
 		c.Status(fiber.StatusOK)
