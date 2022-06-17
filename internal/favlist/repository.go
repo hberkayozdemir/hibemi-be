@@ -66,3 +66,42 @@ func (r *Repository) GetFavCoinWithID(ID string) (*FavCoin, error) {
 	}
 	return &favCoinEntity, nil
 }
+
+func (r *Repository) GetFavlistHistory(UserID string) ([]FavCoin, error) {
+	collection := r.MongoClient.Database("ventures").Collection("favlist")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	options := options.Find()
+	filter := bson.M{"user_id": UserID}
+	cur, err := collection.Find(ctx, filter, options)
+	if err != nil {
+		return nil, err
+	}
+	var transactionEntities []FavCoinEntity
+	for cur.Next(ctx) {
+		transactionEntity := FavCoinEntity{}
+		err := cur.Decode(&transactionEntity)
+		if err != nil {
+			return nil, err
+		}
+		transactionEntities = append(transactionEntities, transactionEntity)
+	}
+
+	return convertTransactionEntityArrayToModelArray(transactionEntities), nil
+}
+
+func convertTransactionEntityArrayToModelArray(transactionEntityArray []FavCoinEntity) []FavCoin {
+	FavCoins := []FavCoin{}
+
+	for _, item := range transactionEntityArray {
+
+		FavCoins = append(FavCoins, FavCoin{
+			ID:           item.ID,
+			UserID:       item.UserID,
+			Symbol:       item.Symbol,
+			CurrentPrice: item.CurrentPrice,
+		})
+	}
+
+	return FavCoins
+}

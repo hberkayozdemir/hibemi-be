@@ -16,6 +16,7 @@ func NewHandler(service Service) Handler {
 
 func (h *Handler) SetupApp(app *fiber.App) {
 	app.Post("/Users/Favlist/AddCoin", h.CreateFavCoinHandler)
+	app.Get("/Users/:id/Favlist/", h.GetFavlistHandler)
 }
 
 func (h *Handler) CreateFavCoinHandler(c *fiber.Ctx) error {
@@ -36,4 +37,18 @@ func (h *Handler) CreateFavCoinHandler(c *fiber.Ctx) error {
 		c.Status(fiber.StatusInternalServerError)
 	}
 	return nil
+}
+
+func (h *Handler) GetFavlistHandler(c *fiber.Ctx) error {
+	userId := c.Params("id")
+
+	favlist, err := h.Service.GetTransactionHistory(userId)
+	switch err {
+	case nil:
+		c.Status(fiber.StatusOK)
+		c.JSON(favlist)
+	default:
+		c.Status(fiber.StatusInternalServerError)
+	}
+	return err
 }

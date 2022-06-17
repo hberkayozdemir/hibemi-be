@@ -30,3 +30,13 @@ func (s *Service) CreateFavCoin(favCoinDTO FavCoinDTO) (*FavCoin, error) {
 
 	return createdFavCoin, nil
 }
+
+func (s *Service) GetTransactionHistory(userId string) ([]FavCoin, error) {
+
+	transactions, err := s.Repository.GetFavlistHistory(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return transactions, nil
+}
