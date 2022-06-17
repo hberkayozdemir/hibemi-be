@@ -91,11 +91,11 @@ func (h *Handler) ActivateUser(c *fiber.Ctx) error {
 		return nil
 	}
 
-	user, err := h.Service.ActivateUser(activationCodeDTO.Email, activationCodeDTO.Code)
+	token, _, err := h.Service.ActivateUser(activationCodeDTO.Email, activationCodeDTO.Code)
 
 	switch err {
 	case nil:
-		c.JSON(user)
+		c.JSON(token)
 		c.Status(fiber.StatusOK)
 	case UserNotFound:
 		c.Status(fiber.StatusNotFound)

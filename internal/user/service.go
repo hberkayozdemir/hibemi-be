@@ -108,27 +108,43 @@ func (s *Service) DeleteUser(userID string) error {
 	return nil
 }
 
-func (s *Service) ActivateUser(email, code string) (*User, error) {
+func (s *Service) ActivateUser(email, code string) (*Token, *User, error) {
 	registeredUser, err := s.Repository.GetUserByEmail(email)
 	if err != nil {
-		return nil, UserNotFound
+		return nil, nil, UserNotFound
 	}
 
 	if registeredUser.IsEmailActivate {
-		return nil, UserAlreadyActivated
+		return nil, nil, UserAlreadyActivated
 	}
 
 	err = s.Repository.DeleteActivationCode(code)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	user, err := s.Repository.ActivateUser(registeredUser.ID)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return user, nil
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, CustomClaims{
+		UserType: user.UserType,
+		StandardClaims: jwt.StandardClaims{
+			Issuer:    user.ID,
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+		},
+	})
+
+	//token, err := claims.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	token, errr := claims.SignedString([]byte("YsO8ecO8ayBoaWxtaSBzaXppIHNldml5b3I="))
+	if errr != nil {
+		return nil, nil, err
+	}
+
+	return &Token{
+		Token: token,
+	}, user, nil
 }
 
 func (s *Service) GetUsersPageableResponse(pageNumber, size int) (*UsersPageableResponse, error) {
